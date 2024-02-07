@@ -1,1 +1,187 @@
+package frazier.program4.TESTER;
+
+import java.util.Scanner;
+
+public class MainClass {
+	// Declaring named constants
+	public static final String TICKET_ADULT = "Adult";
+	public static final String TICKET_JUNIOR = "Junior";
+	public static final String TICKET_TODDLER = "Toddler";
+	public static final String MENU_QUIT = "Quit";
+	public static final char ADULT_SELECTION = 'A';
+	public static final char JUNIOR_SELECTION = 'J';
+	public static final char TODDLER_SELECTION = 'T';
+	public static final char QUIT_SELECTION = 'Q';
+	public static final int TICKET_LIMIT = 10;
+
+	public static final double ADULT_PRICE = 14.50;
+	public static final double JUNIOR_PRICE = 9.50;
+	public static final double TODDLER_PRICE = 0.00;
+
+	/// Variables used in more than one method DOUBLE
+	/// CHECK-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-33-3-3
+	static char menuSelection = ' ';
+	static String ticketSelection = " ";
+	static int ticketAmount = 0;
+	static double ticketPrice = 0.00;
+	static double purchaseTotal = 0.00;
+	static int purchaseCount = 0;
+
+	static int totalAdultTicketsSold = 0;
+	static int totalJuniorTicketsSold = 0;
+	static int totalToddlerTicketsSold = 0;
+	static double totalAdultPrice = 0.0;
+	static double totalJuniorPrice = 0.0;
+	static double totalToddlerPrice = 0.0;
+	static int totalPurchasesCount = 0;
+
+	// SCANNER
+	static Scanner input = new Scanner(System.in);
+
+	public static void main(String[] args) {
+
+		// WELCOME MESSAGE
+		displayWelcome();
+
+		// WHILE LOOP FOR TICKET TYPE SELECTION
+		while (menuSelection != QUIT_SELECTION) {
+			// DISPLAY MENU
+			displayMainMenu();
+
+			// MENU SELECTION
+			menuSelection = input.next().toUpperCase().charAt(0);
+
+			// VALIDATE TICKET TYPE SELECTION
+			getValidatedTicketSelection();
+
+			// PROMPT USER FOR AMOUNT OF TICKETS DESIRED
+			if (menuSelection != QUIT_SELECTION) {
+				// PURCHASE COUNTER
+				totalPurchasesCount++;
+				purchaseCount = getValidatedTicketCount(input);
+			}
+
+			// DISPLAY SINGLE PURCHASE REPORT
+			displaySinglePurchase();
+
+		}
+
+		// DISPLAY FINAL PURCHASE REPORT
+		displayFinalReport();
+
+		// DISPLAY GOODBYE MESSAGE
+		System.out.println("\nThank you for visiting Summerville Sea World!");
+		input.close();
+	}
+
+	// METHODS BEGIN
+
+	// DISPLAY WELCOME MESSAGE
+	public static void displayWelcome() {
+		System.out.println("Welcome to Summerville Sea World!");
+	}
+
+	// INITIALIZE LCV (menuSelection)
+	// Display menu
+	public static void displayMainMenu() {
+		System.out.println();
+		System.out.println("Ticket Menu:");
+		System.out.printf("%s) %-10s%6.2f\n", ADULT_SELECTION, TICKET_ADULT, ADULT_PRICE);
+		System.out.printf("%s) %-10s%6.2f\n", JUNIOR_SELECTION, TICKET_JUNIOR, JUNIOR_PRICE);
+		System.out.printf("%s) %-10s%6.2f\n", TODDLER_SELECTION, TICKET_TODDLER, TODDLER_PRICE);
+		System.out.printf("%s) %-10s\n", QUIT_SELECTION, MENU_QUIT);
+		System.out.println("Please make your selection:");
+	}
+
+	// VALIDATE TICKET SELECTION
+	private static void getValidatedTicketSelection() {
+		while (menuSelection != ADULT_SELECTION && menuSelection != JUNIOR_SELECTION
+				&& menuSelection != TODDLER_SELECTION && menuSelection != QUIT_SELECTION) {
+			System.out.println("Invalid selection. Please make a valid selection.");
+			menuSelection = input.next().toUpperCase().charAt(0);
+		}
+		
+		// UPDATE TOTAL TICKET PURCHASES AND PRICES
+		if (menuSelection == ADULT_SELECTION) {
+			totalAdultTicketsSold += ticketAmount;
+			totalAdultPrice += ticketPrice * ticketAmount;
+		} else if (menuSelection == JUNIOR_SELECTION) {
+			totalJuniorTicketsSold += ticketAmount;
+			totalJuniorPrice += ticketPrice * ticketAmount;
+		} else if (menuSelection == TODDLER_SELECTION) {
+			totalToddlerTicketsSold += ticketAmount;
+			totalToddlerPrice += ticketPrice * ticketAmount;
+		}
+	}
+
+	// VALIDATE TICKET SELECTION AND ACCUMULATE TOTALS
+	public static int getValidatedTicketCount(Scanner input) {
+
+		System.out.println("How may tickets would you like to purchase?");
+		ticketAmount = input.nextInt();
+		
+		while (ticketAmount <= 0 || ticketAmount > TICKET_LIMIT) {
+			System.out.println("Invalid entry");
+			System.out.println("Please enter the desired number of tickets.");
+			ticketAmount = input.nextInt();
+		}
+
+		if (menuSelection == ADULT_SELECTION) {
+			ticketSelection = TICKET_ADULT;
+			ticketPrice = ADULT_PRICE;
+		} else if (menuSelection == JUNIOR_SELECTION) {
+			ticketSelection = TICKET_JUNIOR;
+			ticketPrice = JUNIOR_PRICE;
+		} else {
+			ticketSelection = TICKET_TODDLER;
+			ticketPrice = TODDLER_PRICE;
+		}
+
+		// ACCUMULATE TOTALS
+		purchaseTotal = ticketAmount * ticketPrice;
+		purchaseCount++;
+		
+		return purchaseCount;
+	}
+
+	// DISPLAY SINGLE PURCHASE
+	public static void displaySinglePurchase() {
+		System.out.println("Thank you for your purchase.");
+		System.out.println("Purchase Report:");
+		System.out.printf("%-13s%-8s\n", "Ticket Type:", ticketSelection);
+		System.out.printf("%-13s%8d\n", "Sold:", ticketAmount);
+		System.out.printf("%-13s%8.2f\n", "Unit Price:", ticketPrice);
+		System.out.printf("%-13s%8.2f\n", "Total:", purchaseTotal);
+	}
+
+	// DISPLAY FINAL REPORT
+	public static void displayFinalReport() {
+		// LOCAL VARIABLES
+
+		double totalPurchases = totalAdultPrice + totalJuniorPrice + totalToddlerPrice;
+
+		// Calculate total tickets sold based on completed purchases
+		int totalTicketsSold = totalAdultTicketsSold + totalJuniorTicketsSold + totalToddlerTicketsSold;
+
+		System.out.println("\n~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ~~~~");
+		// REPORT TITLE
+		System.out.println("PORPOISE TICKET SALES REPORT");
+		System.out.println("\n~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ~~~~");
+		System.out.println();
+		// Update to display total purchases and tickets purchased
+		System.out.println("Total Purchases: " + totalPurchasesCount); // Change here
+		System.out.println("Tickets Purchased: " + totalTicketsSold); // Change here
+		System.out.println();
+		// Ticket options
+		System.out.printf("%-6s%-15s%2s\n", "TYPE", "SOLD", "VALUE");
+		// Update the display for adult ticket sales
+		System.out.printf("%-8s%-8d$%8.2f\n", "TODDLER:", totalToddlerTicketsSold, totalToddlerPrice);
+		System.out.printf("%-8s%-8d$%8.2f\n", "JUNIOR:", totalJuniorTicketsSold, totalJuniorPrice);
+		System.out.printf("%-8s%-8d$%8.2f\n", "ADULT:", totalAdultTicketsSold, totalAdultPrice); // Change here
+		System.out.println("\n~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ~~~~");
+		// Update to display total purchases
+		System.out.println("TOTAL: $" + totalPurchases); // Change here
+	}
+
+}
 
